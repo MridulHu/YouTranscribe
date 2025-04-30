@@ -6,6 +6,7 @@ from streamlit_extras.add_vertical_space import add_vertical_space
 from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi
 from warnings import filterwarnings
+import time
 
 
 
@@ -76,26 +77,38 @@ def extract_transcript(video_id, language):
 
 
 def generate_summary(transcript_text):
-
     try:
-        # Configures the genai Library
         genai.configure(api_key=os.environ['GOOGLE_API_KEY'])
 
-        # Initializes a Gemini-Pro Generative Model
-        model = genai.GenerativeModel(model_name = 'gemini-pro')  
+        # Correctly initialize the Gemini model
+        model = genai.GenerativeModel(model_name='models/gemini-1.5-flash-latest')
 
-        # Define a Prompt for AI Model
         prompt = """You are a YouTube video summarizer. You will be taking the transcript text and summarizing the entire video, 
-                    providing the important points are proper sub-heading in a concise manner (within 500 words). 
-                    Please provide the summary of the text given here: """
-        
-        response = model.generate_content(prompt + transcript_text)
+                    providing the important points as proper sub-headings in a concise manner (within 500 words). 
+                    Please provide the summary of the text given here:\n"""
 
-        return response.text
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                response = model.generate_content(prompt + transcript_text)
+                return response.text
+
+            except Exception as e:
+                if "RATE_LIMIT_EXCEEDED" in str(e):
+                    wait_time = 10 * (attempt + 1)
+                    st.warning(f"Rate limit exceeded. Retrying in {wait_time} seconds... (Attempt {attempt + 1}/{max_retries})")
+                    time.sleep(wait_time)
+                elif "models/gemini-pro" in str(e) and "not found" in str(e):
+                    st.error("Model 'gemini-pro' not found. Please ensure the model name is correct and the API is enabled in your Google Cloud project.")
+                    return None
+                else:
+                    raise e  # Re-raise unexpected exceptions
 
     except Exception as e:
         add_vertical_space(5)
-        st.markdown(f'<h5 style="text-position:center;color:orange;">{e}</h5>', unsafe_allow_html=True)
+        st.markdown(f'<h5 style="text-align:center;color:orange;">{e}</h5>', unsafe_allow_html=True)
+        return None
+
 
 
  
@@ -116,7 +129,7 @@ def main():
     with st.sidebar:
 
         image_url = 'https://raw.githubusercontent.com/gopiashokan/YouTube-Video-Transcript-Summarizer-with-GenAI/main/image/youtube_banner.JPG'
-        st.image(image_url, use_column_width=True)
+        st.image(image_url, use_container_width=True)
         add_vertical_space(2)
 
         # Get YouTube Video Link From User 
@@ -150,7 +163,7 @@ def main():
         # Display the Video Thumbnail Image
         with col2:
             st.image(image=f'http://img.youtube.com/vi/{video_id}/0.jpg', 
-                     use_column_width=True)
+                     use_container_width=True)
 
         # Extract Transcript from YouTube Video
         add_vertical_space(2)
