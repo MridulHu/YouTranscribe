@@ -110,9 +110,9 @@ This project is licensed under the MIT License. Please review the LICENSE file f
 
 **Contact**
 
-📧 Email: gopiashokankiot@gmail.com 
+📧 Email: mriduldas0812@gmail.com
 
-🌐 LinkedIn: [linkedin.com/in/gopiashokan](https://www.linkedin.com/in/gopiashokan)
+🌐 LinkedIn: [linkedin.com/in/mridulhu(https://www.linkedin.com/in/mridulhu
 
 For any further questions or inquiries, feel free to reach out. We are happy to assist you with any queries.
 
