@@ -1,5 +1,7 @@
 # YouTube Video Transcript Summarizer with Generative AI
 
+**Deployed Linl: https://youtranscribe-i0w5.onrender.com/ **
+
 **Introduction**
 
 The YouTube Video Transcript Summarizer with GenAI is an innovative tool designed to save time by automatically generating concise summaries from YouTube video transcripts. This application leverages the YouTube Transcript API to retrieve video transcripts, and integrates Google's Gemini AI to summarize them, helping users get key takeaways quickly without watching the entire video. With a clean, user-friendly interface built using Streamlit, this project simplifies the process of obtaining summaries from video content, making it accessible to students, professionals, and anyone looking to boost their productivity.
