@@ -6,16 +6,16 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 import os
 
-# Load environment variables from .env
+
 load_dotenv()
 API_KEY = os.getenv("GOOGLE_API_KEY")
 
-# Configure GenAI
+
 genai.configure(api_key=API_KEY)
 
 app = FastAPI()
 
-# CORS: Allow requests from your Next.js frontend
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -23,11 +23,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Input model for summarization
+
 class VideoIdInput(BaseModel):
     video_id: str
 
-# GET transcript endpoint (optional for frontend usage)
+
 @app.get("/api/transcript/{video_id}")
 def get_transcript(video_id: str):
     try:
@@ -36,7 +36,7 @@ def get_transcript(video_id: str):
     except Exception as e:
         return {"error": str(e)}
 
-# POST summarization endpoint
+
 @app.post("/api/generate")
 async def summarize_transcript(data: VideoIdInput):
     try:
@@ -48,7 +48,7 @@ async def summarize_transcript(data: VideoIdInput):
         response = model.generate_content(prompt)
 
         print("=== Gemini response ===")
-        print(response.text)  # Log what Gemini returned
+        print(response.text) 
         print("=======================")
 
         return {"summary": response.text}
